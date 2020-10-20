@@ -17,7 +17,7 @@
           </div>
           <div class="ml-2">
             <b-button @click="openBrandList">
-              <span><i class="fas fa-bars"></i></span>
+              <span><i class="fas fa-plus"></i></span>
             </b-button>
             <div class="brand-list" :class="{ 'd-block': openedBrands }">
               <div class="blocker" @click="hideBrandList"></div>
@@ -64,7 +64,7 @@
                   <div class="profile-item">
                     <b-button variant="outline-secondary">
                         <span>
-                          <i class="fas fa-user fa-3x mt-3"></i>
+                          <i class="fas fa-user fa-2x mt-2"></i>
                         </span>
                       profile
                     </b-button>
@@ -72,7 +72,7 @@
                   <div class="profile-item">
                     <b-button variant="outline-secondary">
                         <span>
-                          <i class="fas fa-sign-out-alt fa-3x mt-3"></i>
+                          <i class="fas fa-sign-out-alt fa-2x mt-2"></i>
                         </span>
                       sign-out
                     </b-button>
@@ -85,48 +85,62 @@
       </b-navbar>
       <b-nav vertical class="sidebar">
         <span class="mt-3">
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center"><span><i class="fas fa-user btn-icon"></i>aaa</span></b-button></li>
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center"><span><i class="fas fa-user btn-icon"></i>ang</span></b-button></li>
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center"><span><i class="fas fa-user btn-icon"></i>ad</span></b-button></li>
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center"><span><i class="fas fa-user btn-icon"></i>here</span></b-button></li>
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center"><span><i class="fas fa-user btn-icon"></i>ak</span></b-button></li>
+          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('a')"><span><i class="fas fa-user btn-icon"></i>aaa</span></b-button></li>
+          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('b')"><span><i class="fas fa-user btn-icon"></i>ang</span></b-button></li>
+          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('c')"><span><i class="fas fa-user btn-icon"></i>ad</span></b-button></li>
+          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('d')"><span><i class="fas fa-user btn-icon"></i>here</span></b-button></li>
+          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('e')"><span><i class="fas fa-user btn-icon"></i>ak</span></b-button></li>
         </span>
       </b-nav>
-      <b-collapse id="sub-sidebar">
-        <b-card>I am collapsible content!</b-card>
-      </b-collapse>
-      <div class="content">
-        <div id="chart"></div>
+      <div class="main-container">
+        <main>
+          <transition name="slide">
+            <div class="sidebar-submenu" v-if="openedSideSubMenu">
+              menu-type = {{ JSON.stringify(menuType) }}
+              <p v-if="menuType === 'a'">MC</p>
+              <pre v-if="menuType === 'b'">MAGNAI</pre>
+              <h4 v-if="menuType === 'c'">YOGI</h4>
+              <h3 v-if="menuType === 'd'">SUUGII</h3>
+              <h2 v-if="menuType === 'e'">KU</h2>
+            </div>
+          </transition>
+          <div class="main-graph">
+            <pre>{{ selectedBrand }}</pre>
+            <b-card class="border-success" header-tag="header">
+              <h3 slot="header">fav-brands</h3>
+              <b-table-simple v-if="favoriteBrands && favoriteBrands.length" small bordered outlined hover striped>
+                <b-thead>
+                  <b-tr>
+                    <b-th>logo</b-th>
+                    <b-th>name</b-th>
+                    <b-th>action</b-th>
+                  </b-tr>
+                </b-thead>
+                <b-tbody>
+                  <b-tr v-for="(item, i) in favoriteBrands" :key="i">
+                    <b-td>{{ i + 1 }}</b-td>
+                    <b-td>{{ item.name }}</b-td>
+                    <b-td>
+                      <b-button size="sm"><span><i class="fas fa-times"></i></span></b-button>
+                    </b-td>
+                  </b-tr>
+                </b-tbody>
+              </b-table-simple>
+            </b-card>
+            <b-card class="text-center mt-3" bg-variant="info">
+              <label>graphics here hehehehehe</label>
+            </b-card>
+          </div>
+          <div class="trade-actions">asdf</div>
+        </main>
       </div>
 <!--        <div id="chart"></div>-->
-<!--        <b-card class="border-success" header-tag="header">-->
-<!--        <h3 slot="header">fav-brands</h3>-->
-<!--        <b-button size="xs" v-b-toggle.nav-col variant="primary">Toggle Collapse</b-button>-->
-<!--        <b-button size="xs" v-b-toggle.sidebar-1>Toggle Sidebar</b-button>-->
-<!--        <b-table-simple v-if="favoriteBrands && favoriteBrands.length" small bordered outlined hover striped>-->
-<!--        <b-thead>-->
-<!--          <b-tr>-->
-<!--            <b-th>logo</b-th>-->
-<!--            <b-th>name</b-th>-->
-<!--            <b-th>action</b-th>-->
-<!--          </b-tr>-->
-<!--        </b-thead>-->
-<!--        <b-tbody>-->
-<!--          <b-tr v-for="(item, i) in favoriteBrands" :key="i">-->
-<!--            <b-td>{{ i + 1 }}</b-td>-->
-<!--            <b-td>{{ item.name }}</b-td>-->
-<!--            <b-td>-->
-<!--              <b-button size="sm"><span><i class="fas fa-times"></i></span></b-button>-->
-<!--            </b-td>-->
-<!--          </b-tr>-->
-<!--        </b-tbody>-->
-<!--      </b-table-simple>-->
-<!--      </b-card>-->
     </b-container>
   </div>
 </template>
 
 <script>
+// eslint-disable-next-line
 import _ from 'lodash';
 // eslint-disable-next-line
 import * as am4core from '@amcharts/amcharts4/core'
@@ -139,79 +153,19 @@ export default {
   data() {
     return {
       brands: [
-        { id: 1, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg?_nc_cat=1&_nc_sid=09cbfe&_nc_ohc=MEbfTvFZp0oAX9Xw2ue&_nc_oc=AQmRCL1tKRoAjVZBt-OVW6pM-EBU2P2Bq3UaObqgRo7WXraFZWyP5Lv3KrZtiVjDfPo&_nc_ht=scontent.fuln3-1.fna&oh=42f6b803dfd0bbe9e52df749b480202c&oe=5FAF00CF', name: 'ICNFBI' },
-        { id: 2, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg?_nc_cat=1&_nc_sid=09cbfe&_nc_ohc=MEbfTvFZp0oAX9Xw2ue&_nc_oc=AQmRCL1tKRoAjVZBt-OVW6pM-EBU2P2Bq3UaObqgRo7WXraFZWyP5Lv3KrZtiVjDfPo&_nc_ht=scontent.fuln3-1.fna&oh=42f6b803dfd0bbe9e52df749b480202c&oe=5FAF00CF', name: 'LEND' },
-        { id: 3, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg?_nc_cat=1&_nc_sid=09cbfe&_nc_ohc=MEbfTvFZp0oAX9Xw2ue&_nc_oc=AQmRCL1tKRoAjVZBt-OVW6pM-EBU2P2Bq3UaObqgRo7WXraFZWyP5Lv3KrZtiVjDfPo&_nc_ht=scontent.fuln3-1.fna&oh=42f6b803dfd0bbe9e52df749b480202c&oe=5FAF00CF', name: 'OYU' },
-        { id: 4, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg?_nc_cat=1&_nc_sid=09cbfe&_nc_ohc=MEbfTvFZp0oAX9Xw2ue&_nc_oc=AQmRCL1tKRoAjVZBt-OVW6pM-EBU2P2Bq3UaObqgRo7WXraFZWyP5Lv3KrZtiVjDfPo&_nc_ht=scontent.fuln3-1.fna&oh=42f6b803dfd0bbe9e52df749b480202c&oe=5FAF00CF', name: 'GOBI' },
-        { id: 5, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg?_nc_cat=1&_nc_sid=09cbfe&_nc_ohc=MEbfTvFZp0oAX9Xw2ue&_nc_oc=AQmRCL1tKRoAjVZBt-OVW6pM-EBU2P2Bq3UaObqgRo7WXraFZWyP5Lv3KrZtiVjDfPo&_nc_ht=scontent.fuln3-1.fna&oh=42f6b803dfd0bbe9e52df749b480202c&oe=5FAF00CF', name: 'APU' },
-      ],
-      mockBrandGraph: [
-        {date: '2020-09-01', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-01', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-02', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-04', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-05', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-06', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-07', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-08', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-09', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-10', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-11', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-12', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-13', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-14', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-15', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-16', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-17', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-18', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-19', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-20', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-21', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-22', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-23', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-24', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-25', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-26', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-27', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-28', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-29', closingPrice: _.random(500, 5000) },
-        {date: '2020-09-30', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-01', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-01', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-02', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-04', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-05', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-06', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-07', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-08', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-09', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-10', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-11', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-12', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-13', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-14', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-15', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-16', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-17', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-18', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-19', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-20', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-21', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-22', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-23', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-24', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-25', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-26', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-27', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-28', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-29', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-30', closingPrice: _.random(500, 5000) },
-        {date: '2020-10-31', closingPrice: _.random(500, 5000) },
+        { id: 1, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'ICNFBI' },
+        { id: 2, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'LEND' },
+        { id: 3, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'OYU' },
+        { id: 4, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'GOBI' },
+        { id: 5, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'APU' },
       ],
       favoriteBrands: [],
+      selectedBrand: null,
       openedBrands: false,
       openedProfile: false,
       openedBalance: false,
+      openedSideSubMenu: false,
+      menuType: null,
     }
   },
   mounted() {
@@ -239,6 +193,7 @@ export default {
       this.openedBrands = !this.openedBrands;
     },
     openBrand(brand) {
+      this.selectedBrand = brand;
       console.log('openBrand      ' + brand.name);
     },
     addFav(id) {
@@ -264,6 +219,17 @@ export default {
     toggleBalance() {
       this.openedBalance = !this.openedBalance;
     },
+    toggleSideSubMenu(menuType) {
+      if (!this.menuType) {
+        this.openedSideSubMenu = !this.openedSideSubMenu;
+        this.menuType = menuType;
+      } else if (this.menuType === menuType) {
+        this.openedSideSubMenu = !this.openedSideSubMenu;
+        this.menuType = null;
+      } else {
+        this.menuType = menuType;
+      }
+    }
   },
   computed: {
     // maxSelectedFavBrands() {
@@ -374,10 +340,19 @@ export default {
     display: table-row;
   }
 
+  /*.profile-item {*/
+  /*  min-height: 100px;*/
+  /*  height:100px;*/
+  /*  width: 100px;*/
+  /*  padding: 0.2rem;*/
+  /*  display:table-cell;*/
+  /*  text-align: center;*/
+  /*}*/
+
   .profile-item {
-    min-height: 100px;
-    height:100px;
-    width: 100px;
+    min-height: 80px;
+    height:80px;
+    width: 80px;
     padding: 0.2rem;
     display:table-cell;
     text-align: center;
@@ -399,14 +374,6 @@ export default {
     z-index: -247;
   }
 
-  .profile-item {
-    min-height: 100px;
-    height:100px;
-    width: 100px;
-    padding: 0.2rem;
-    display:table-cell;
-    text-align: center;
-  }
 
   .balance-container {
     background: #42b983;
@@ -451,12 +418,65 @@ export default {
     right: 50%;
   }
 
-  .content {
+  .main-container {
+    border: 1px dashed red;
     position: relative;
-    left: 80px;
-    border: 2px dashed red;
     width: calc(100vw - 80px) !important;
     height: calc(100vh - 65px) !important;
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  main > * {
+    height: calc(100vh - 65px) !important;
+    align-items: stretch;
+  }
+
+  main > div:first-child {
+    overflow-y: auto;
+    flex: 1 1 auto;
+  }
+
+  main > div:nth-child(2) {
+    overflow-y: auto;
+    flex: 1 1 auto;
+  }
+
+  main > div:last-child {
+    flex: 0 0 auto;
+    flex-direction: column;
+  }
+
+  .sidebar-submenu {
+    width: 400px;
+    border: 1px solid green;
+  }
+
+  .main-graph {
+    width: 100%;
+    border: 1px solid yellow;
+  }
+
+  .trade-actions {
+    width: 200px;
+    border: 1px solid blue;
+  }
+
+  .slide-leave-active,
+  .slide-enter-active {
+    transition: .4s;
+  }
+  .slide-enter {
+    transform: translate(-100%, 0);
+  }
+  .slide-leave-to {
+    transform: translate(-100%, 0);
   }
 
 </style>
