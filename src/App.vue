@@ -1,88 +1,7 @@
 <template>
   <div id="app">
     <b-container fluid class="p-0">
-      <b-navbar toggleable="lg" type="light" variant="light">
-        <b-navbar-brand href="#"><img src="./assets/images/icapital.svg" alt="ICCAPITAL" class="logo"></b-navbar-brand>
-        <b-navbar-nav class="d-flex">
-          <div class="flex-column pr-2" v-for="(item, i) in favoriteBrands" :key="i">
-            <div class="fav-item">
-                <span class="remove-fav d-none" @click="removeFav(item.id)">
-                  <i class="remove-icon fas fa-times black"></i>
-                </span>
-              <b-button variant="outline-secondary" size="sm" @click="openBrand(item)">
-                <img :src="item.logo" :alt="item.name" class="brand-logo">
-                <span>{{ item.name }}</span>
-              </b-button>
-            </div>
-          </div>
-          <div class="ml-2">
-            <b-button @click="openBrandList">
-              <span><i class="fas fa-plus"></i></span>
-            </b-button>
-            <div class="brand-list" :class="{ 'd-block': openedBrands }">
-              <div class="blocker" @click="hideBrandList"></div>
-              <b-table-simple borderless small hover>
-                <b-thead>
-                  <b-tr>
-                    <b-th class="text-center">logo</b-th>
-                    <b-th class="text-center">name</b-th>
-                    <b-th class="text-center">action</b-th>
-                  </b-tr>
-                </b-thead>
-                <b-tbody>
-                  <b-tr v-for="(item, i) in brands" :key="i">
-                    <b-td class="text-center">{{ i + 1 }}</b-td>
-                    <b-td class="text-center">{{ item.name }}</b-td>
-                    <b-td class="text-center">
-                      <b-button class="btn-xs" :disabled="item.isDisabled" @click.prevent="addFav(item.id)"><span><i class="fas fa-plus"></i></span></b-button>
-                    </b-td>
-                  </b-tr>
-                </b-tbody>
-              </b-table-simple>
-            </div>
-          </div>
-        </b-navbar-nav>
-        <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto">
-          <div>
-            <b-button variant="outline-secondary" @click="toggleBalance">
-              <span><i class="far fa-credit-card"></i></span>
-            </b-button>
-            <div class="balance-container" :class="{ 'd-block': openedBalance }">
-              <div class="blocker" @click="toggleBalance"></div>
-              <div>$1,000,000</div>
-            </div>
-          </div>
-          <div class="ml-2">
-            <b-button @click="toggleProfile">
-              <span><i class="fas fa-user"></i></span>
-            </b-button>
-            <div class="profile-container" :class="{ 'd-block': openedProfile }">
-              <div class="blocker" @click="toggleProfile"></div>
-              <div class="profile-sub-container">
-                <div class="profile-row">
-                  <div class="profile-item">
-                    <b-button variant="outline-secondary">
-                        <span>
-                          <i class="fas fa-user fa-2x mt-2"></i>
-                        </span>
-                      profile
-                    </b-button>
-                  </div>
-                  <div class="profile-item">
-                    <b-button variant="outline-secondary">
-                        <span>
-                          <i class="fas fa-sign-out-alt fa-2x mt-2"></i>
-                        </span>
-                      sign-out
-                    </b-button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </b-navbar-nav>
-      </b-navbar>
+      <top-bar></top-bar>
       <b-nav vertical class="sidebar">
         <span class="mt-3">
           <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('a')"><span><i class="fas fa-user btn-icon"></i>aaa</span></b-button></li>
@@ -146,10 +65,14 @@ import _ from 'lodash';
 import * as am4core from '@amcharts/amcharts4/core'
 // eslint-disable-next-line
 import * as am4charts from '@amcharts/amcharts4/charts'
+import Topbar from './components/Topbar';
 
 // let chart = am4core.create('chart', am4charts.XYChart);
 export default {
   name: 'app',
+  components: {
+    'top-bar': Topbar,
+  },
   data() {
     return {
       brands: [
