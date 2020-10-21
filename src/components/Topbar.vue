@@ -5,7 +5,7 @@
       <div class="flex-column pr-2" v-for="(item, i) in favoriteBrands" :key="i">
         <div class="fav-item">
                 <span class="remove-fav d-none" @click="removeFav(item.id)">
-                  <i class="remove-icon fas fa-times black"></i>
+                  <i class="remove-icon fas fa-times"></i>
                 </span>
           <b-button variant="outline-secondary" size="sm" @click="openBrand(item)">
             <img :src="item.logo" :alt="item.name" class="brand-logo">
@@ -22,7 +22,7 @@
           <ul class="brand-list-wrapper" id="brand-list">
             <li class="brand-list-item brand-list-search">
               <b-input-group>
-                <b-input size="sm" @input="getBrandList" debounce="1000" v-model="brandSearchQuery"></b-input>
+                <b-input size="sm" @input="getBrandList" v-model="brandSearchQuery"></b-input>
                 <b-input-group-append>
                   <b-button @click="getBrandList" size="xs" variant="outline-success"><span class="mr-2 ml-2 d-flex align-items-center"><i class="fas fa-search mb-1"></i></span></b-button>
                 </b-input-group-append>
@@ -36,6 +36,9 @@
                 <b-button class="btn-xs ml-5" :disabled="item.isDisabled" @click.prevent="addFav(item.id)"><span><i class="fas fa-plus"></i></span></b-button>
               </div>
             </li>
+            <transition name="fade">
+              <li v-show="loadingBrands" class="brand-list-item justify-content-center"><span class="loading-spinner"><i class="fas fa-spinner"></i></span></li>
+            </transition>
           </ul>
         </div>
       </div>
@@ -43,12 +46,15 @@
     <!-- Right aligned nav items -->
     <b-navbar-nav class="ml-auto">
       <div>
-        <b-button variant="outline-secondary" @click="toggleBalance">
+        <b-button variant="outline-secondary" @click="openBalance">
           <span><i class="far fa-credit-card"></i></span>
         </b-button>
         <div class="balance-container" :class="{ 'd-block': openedBalance }">
           <div class="blocker" @click="toggleBalance"></div>
-          <div>$1,000,000</div>
+          <transition name="fade">
+            <div v-show="loadingBalance" class="balance-loader"><span><i class="fas fa-spinner loading-spinner"></i></span></div>
+          </transition>
+          <div>{{ balance }}</div>
         </div>
       </div>
       <div class="ml-2">
@@ -91,40 +97,42 @@ export default {
   name: "topbar",
   data() {
     return {
-      isLoading: false,
+      loadingBrands: false,
       brandSearchQuery: '',
       brands: [
         { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
-        { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
+        // { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
       ],
       favoriteBrands: [],
       selectedBrand: null,
       openedBrands: false,
       openedProfile: false,
+      balance: 0,
       openedBalance: false,
+      loadingBalance: false,
       asdf: [
         { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
         { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
@@ -133,6 +141,9 @@ export default {
         { id: _.random(500,10000), isDisabled: false, logo: 'https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/5e17558f848f82e664c09d67_logo-dark.svg', name: Math.random().toString(36).slice(2).slice(0,5).toUpperCase() },
       ]
     }
+  },
+  created() {
+    this.getBrandList = _.debounce(this.getBrandList, 500);
   },
   mounted() {
     const listElm = document.querySelector('#brand-list');
@@ -146,11 +157,12 @@ export default {
   beforeDestroy() {},
   methods: {
     getBrandList() {
-      this.isLoading = true;
+      console.log('getBrandList called');
+      this.loadingBrands = true;
       setTimeout(() => {
-        this.brands.push(...this.asdf);
-        this.isLoading = false;
-      }, 500);
+        // this.brands.push(...this.asdf);
+        this.loadingBrands = false;
+      }, 2500);
     },
     openBrandList() {
       this.openedBrands = !this.openedBrands;
@@ -160,7 +172,7 @@ export default {
     },
     openBrand(brand) {
       this.selectedBrand = brand;
-      console.log('openBrand      ' + brand.name);
+      this.$emit('brand-selected', brand);
     },
     addFav(id) {
       // if (this.favoriteBrands.length >= 3) {
@@ -182,9 +194,20 @@ export default {
       this.openedProfile = !this.openedProfile;
     },
 
+    getBalance() {
+      this.loadingBalance = true;
+      setTimeout(() => {
+        this.balance = _.random(5000,54000);
+        this.loadingBalance = false;
+      }, 1000);
+    },
     toggleBalance() {
       this.openedBalance = !this.openedBalance;
     },
+    async openBalance() {
+      await this.getBalance();
+      await this.toggleBalance();
+    }
   }
 }
 </script>
@@ -213,7 +236,8 @@ export default {
   width: 18px;
   height: 15px;
   overflow: visible;
-  border: 1px solid black;
+  /* TODO: select color! */
+  border: 1px solid orangered;
   border-radius: 400px;
   position: absolute;
   top: -10px;
@@ -223,6 +247,8 @@ export default {
 }
 
 .remove-icon {
+  /* TODO: select color! */
+  color: #a81f0b;
   display: table-cell;
   vertical-align: center;
 }
@@ -264,7 +290,7 @@ export default {
 
 .brand-list-wrapper {
   overflow: auto;
-  height: 10rem;
+  height: 15rem;
   border: 2px solid #dce4ec;
   border-radius: 5px;
 }
@@ -352,8 +378,7 @@ export default {
 
 
 .balance-container {
-  background: #42b983;
-  border: 1px dashed green;
+  background: #dce4ec;
   border-radius: 10px;
   position: absolute;
   z-index: 1000;
@@ -364,6 +389,15 @@ export default {
   right: 4rem;
   /* SORRY */
   display: none;
+}
+
+.balance-loader {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  z-index: 4999;
 }
 
 ::-webkit-scrollbar {
@@ -379,4 +413,21 @@ export default {
 ::-webkit-scrollbar-corner {
       background-color: rgba(0,0,0,0);
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.loading-spinner {
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 </style>

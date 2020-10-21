@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <b-container fluid class="p-0">
-      <top-bar></top-bar>
+      <top-bar @brand-selected="displayBrand"></top-bar>
       <b-nav vertical class="sidebar">
         <span class="mt-3">
           <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('a')"><span><i class="fas fa-user btn-icon"></i>aaa</span></b-button></li>
@@ -24,27 +24,27 @@
             </div>
           </transition>
           <div class="main-graph">
-            <pre>{{ selectedBrand }}</pre>
-            <b-card class="border-success" header-tag="header">
-              <h3 slot="header">fav-brands</h3>
-              <b-table-simple v-if="favoriteBrands && favoriteBrands.length" small bordered outlined hover striped>
-                <b-thead>
-                  <b-tr>
-                    <b-th>logo</b-th>
-                    <b-th>name</b-th>
-                    <b-th>action</b-th>
-                  </b-tr>
-                </b-thead>
-                <b-tbody>
-                  <b-tr v-for="(item, i) in favoriteBrands" :key="i">
-                    <b-td>{{ i + 1 }}</b-td>
-                    <b-td>{{ item.name }}</b-td>
-                    <b-td>
-                      <b-button size="sm"><span><i class="fas fa-times"></i></span></b-button>
-                    </b-td>
-                  </b-tr>
-                </b-tbody>
-              </b-table-simple>
+            <b-card v-if="selectedBrand" class="border-success" header-tag="header">
+              <h3 slot="header">selected-brand</h3>
+<!--              <b-table-simple v-if="favoriteBrands && favoriteBrands.length" small bordered outlined hover striped>-->
+<!--                <b-thead>-->
+<!--                  <b-tr>-->
+<!--                    <b-th>logo</b-th>-->
+<!--                    <b-th>name</b-th>-->
+<!--                    <b-th>action</b-th>-->
+<!--                  </b-tr>-->
+<!--                </b-thead>-->
+<!--                <b-tbody>-->
+<!--                  <b-tr v-for="(item, i) in favoriteBrands" :key="i">-->
+<!--                    <b-td>{{ i + 1 }}</b-td>-->
+<!--                    <b-td>{{ item.name }}</b-td>-->
+<!--                    <b-td>-->
+<!--                      <b-button size="sm"><span><i class="fas fa-times"></i></span></b-button>-->
+<!--                    </b-td>-->
+<!--                  </b-tr>-->
+<!--                </b-tbody>-->
+<!--              </b-table-simple>-->
+              <pre>{{ selectedBrand }}</pre>
             </b-card>
             <b-card class="text-center mt-3" bg-variant="info">
               <label>graphics here hehehehehe</label>
@@ -109,38 +109,8 @@ export default {
     // series.dataFields.valueY = "closingPrice";
   },
   methods: {
-    openBrandList() {
-      this.openedBrands = !this.openedBrands;
-    },
-    hideBrandList() {
-      this.openedBrands = !this.openedBrands;
-    },
-    openBrand(brand) {
+    displayBrand(brand) {
       this.selectedBrand = brand;
-      console.log('openBrand      ' + brand.name);
-    },
-    addFav(id) {
-      // if (this.favoriteBrands.length >= 3) {
-      //   this.$bvToast('maxFavBrandsSelected');
-      //   return;
-      // }
-      this.brands.find(x => x.id === id).isDisabled = true;
-      this.favoriteBrands.push(this.brands.find(x => x.id === id));
-      this.openedBrands = !this.openedBrands;
-    },
-    removeFav(id) {
-      this.favoriteBrands = this.favoriteBrands.filter(x => x.id !== id);
-      this.$nextTick(() => {
-        this.brands.find(x => x.id === id).isDisabled = false;
-        this.$forceUpdate();
-      });
-    },
-    toggleProfile() {
-      this.openedProfile = !this.openedProfile;
-    },
-
-    toggleBalance() {
-      this.openedBalance = !this.openedBalance;
     },
     toggleSideSubMenu(menuType) {
       if (!this.menuType) {
@@ -382,6 +352,7 @@ export default {
   }
 
   .main-graph {
+    padding: .625rem;
     width: 100%;
     border: 1px solid yellow;
   }
