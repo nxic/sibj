@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <b-container fluid class="p-0">
-      <top-bar @brand-selected="displayBrand"></top-bar>
+      <top-bar></top-bar>
       <b-nav vertical class="sidebar">
         <span class="mt-3">
           <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('a')"><span><i class="fas fa-user btn-icon"></i>aaa</span></b-button></li>
@@ -24,7 +24,7 @@
             </div>
           </transition>
           <div class="main-graph">
-            <b-card v-if="selectedBrand" class="border-success" header-tag="header">
+            <b-card v-if="brand && brand.id" class="border-success" header-tag="header">
               <h3 slot="header">selected-brand</h3>
 <!--              <b-table-simple v-if="favoriteBrands && favoriteBrands.length" small bordered outlined hover striped>-->
 <!--                <b-thead>-->
@@ -44,7 +44,7 @@
 <!--                  </b-tr>-->
 <!--                </b-tbody>-->
 <!--              </b-table-simple>-->
-              <pre>{{ selectedBrand }}</pre>
+              <pre>{{ brand }}</pre>
             </b-card>
             <b-card class="text-center mt-3" bg-variant="info">
               <label>graphics here hehehehehe</label>
@@ -65,6 +65,8 @@ import _ from 'lodash';
 import * as am4core from '@amcharts/amcharts4/core'
 // eslint-disable-next-line
 import * as am4charts from '@amcharts/amcharts4/charts'
+// eslint-disable-next-line
+import { mapMutations, mapState } from 'vuex'
 import Topbar from './components/Topbar';
 
 // let chart = am4core.create('chart', am4charts.XYChart);
@@ -109,8 +111,8 @@ export default {
     // series.dataFields.valueY = "closingPrice";
   },
   methods: {
-    displayBrand(brand) {
-      this.selectedBrand = brand;
+    displayBrand() {
+      this.selectedBrand = this.brand;
     },
     toggleSideSubMenu(menuType) {
       if (!this.menuType) {
@@ -125,10 +127,25 @@ export default {
     }
   },
   computed: {
+    brand() {
+      return this.$store.state.brand.brand;
+    },
+    isDisplay() {
+      return !!this.menuType;
+    },
     // maxSelectedFavBrands() {
     //   return this.favoriteBrands.length > 2;
     // }
   },
+  watch: {
+    brand(oldVal, newVal) {
+      console.log('old', JSON.stringify(oldVal));
+      console.log('new', JSON.stringify(newVal));
+    },
+    isDisplay() {
+      console.log('computed changes');
+    }
+  }
 }
 </script>
 
@@ -140,121 +157,6 @@ export default {
     font-family: 'Lato', sans-serif !important;
   }
 
-  .brand-logo {
-    height: 2rem;
-    width: 2rem;
-    border-radius: 400px;
-    margin-right: 10px;
-  }
-
-  .remove-fav:hover {
-    display: block;
-    cursor: pointer;
-  }
-
-  .fav-item {
-    overflow: visible;
-    position: relative;
-    height: max-content;
-    width: max-content;
-  }
-
-  .remove-fav {
-    width: 18px;
-    height: 15px;
-    overflow: visible;
-    border: 1px solid black;
-    border-radius: 400px;
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    text-align: center;
-    display: table;
-  }
-
-  .remove-icon {
-    display: table-cell;
-    vertical-align: center;
-  }
-
-  .fav-item:hover .remove-fav:not(:hover) {
-    display: table !important;
-  }
-
-  .remove-fav:hover {
-    display: table !important;
-  }
-
-  .btn-xs {
-    padding  : .25rem .4rem;
-    font-size  : .875rem;
-    line-height  : .5;
-    border-radius : .2rem;
-  }
-
-  .logo {
-    width: 100px;
-    margin-right: 3rem;
-  }
-
-  .brand-list {
-    position: absolute;
-    z-index: 1000;
-    min-width: 15rem;
-    top: 100%;
-    list-style: none;
-    font-size: 1rem;
-    text-align: left;
-    background: #e9e9e9;
-    display: none;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-  }
-
-  .profile-container {
-    position: absolute;
-    z-index: 1000;
-    min-width: 10rem;
-    top: 100%;
-    right: 1rem;
-    display: none;
-  }
-
-  .profile-sub-container {
-    background: #fefefe;
-    width: 200px;
-    height: auto;
-    display:table;
-    /*border: 1px solid #ccc;*/
-    border-radius: 5px;
-  }
-
-  .profile-row {
-    display: table-row;
-  }
-
-  /*.profile-item {*/
-  /*  min-height: 100px;*/
-  /*  height:100px;*/
-  /*  width: 100px;*/
-  /*  padding: 0.2rem;*/
-  /*  display:table-cell;*/
-  /*  text-align: center;*/
-  /*}*/
-
-  .profile-item {
-    min-height: 80px;
-    height:80px;
-    width: 80px;
-    padding: 0.2rem;
-    display:table-cell;
-    text-align: center;
-  }
-
-  .profile-btn .btn {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
 
   .blocker {
     position: fixed;
@@ -267,21 +169,6 @@ export default {
     z-index: -247;
   }
 
-
-  .balance-container {
-    background: #42b983;
-    border: 1px dashed green;
-    border-radius: 10px;
-    position: absolute;
-    z-index: 1000;
-    min-width: 10rem;
-    height: 3rem;
-    top: 100%;
-    /* SORRY */
-    right: 4rem;
-    /* SORRY */
-    display: none;
-  }
   .sidebar {
     z-index: 999;
     max-width: 80px;

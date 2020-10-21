@@ -17,7 +17,8 @@
         <b-button @click="openBrandList">
           <span><i class="fas fa-plus"></i></span>
         </b-button>
-        <div class="brand-list" :class="{ 'd-block': openedBrands }">
+        <transition name="fade">
+          <div v-show="openedBrands" class="brand-list">
           <div class="blocker" @click="hideBrandList"></div>
           <ul class="brand-list-wrapper" id="brand-list">
             <li class="brand-list-item brand-list-search">
@@ -29,7 +30,7 @@
               </b-input-group>
             </li>
             <li class="brand-list-item" v-for="(item, i) in brands" :key="i">
-            {{ i + 1 }}
+              {{ i + 1 }}
               {{ item.id }}
               {{ item.name }}
               <div class="brand-button-wrapper">
@@ -41,6 +42,7 @@
             </transition>
           </ul>
         </div>
+        </transition>
       </div>
     </b-navbar-nav>
     <!-- Right aligned nav items -->
@@ -49,41 +51,45 @@
         <b-button variant="outline-secondary" @click="openBalance">
           <span><i class="far fa-credit-card"></i></span>
         </b-button>
-        <div class="balance-container" :class="{ 'd-block': openedBalance }">
-          <div class="blocker" @click="toggleBalance"></div>
-          <transition name="fade">
-            <div v-show="loadingBalance" class="balance-loader"><span><i class="fas fa-spinner loading-spinner"></i></span></div>
-          </transition>
-          <div>{{ balance }}</div>
-        </div>
+        <transition name="fade">
+          <div v-show="openedBalance" class="balance-container">
+            <div class="blocker" @click="toggleBalance"></div>
+            <transition name="fade">
+              <div v-show="loadingBalance" class="balance-loader"><span><i class="fas fa-spinner loading-spinner"></i></span></div>
+            </transition>
+            <div v-show="!loadingBalance">{{ balance }}</div>
+          </div>
+        </transition>
       </div>
       <div class="ml-2">
         <b-button @click="toggleProfile">
           <span><i class="fas fa-user"></i></span>
         </b-button>
-        <div class="profile-container" :class="{ 'd-block': openedProfile }">
-          <div class="blocker" @click="toggleProfile"></div>
-          <div class="profile-sub-container">
-            <div class="profile-row">
-              <div class="profile-item">
-                <b-button variant="outline-secondary">
-                        <span>
-                          <i class="fas fa-user fa-2x mt-2"></i>
-                        </span>
-                  profile
-                </b-button>
-              </div>
-              <div class="profile-item">
-                <b-button variant="outline-secondary">
-                        <span>
-                          <i class="fas fa-sign-out-alt fa-2x mt-2"></i>
-                        </span>
-                  sign-out
-                </b-button>
+        <transition name="fade">
+          <div v-show="openedProfile" class="profile-container">
+            <div class="blocker" @click="toggleProfile"></div>
+            <div class="profile-sub-container">
+              <div class="profile-row">
+                <div class="profile-item">
+                  <b-button variant="outline-secondary">
+                          <span>
+                            <i class="fas fa-user fa-2x mt-2"></i>
+                          </span>
+                    profile
+                  </b-button>
+                </div>
+                <div class="profile-item">
+                  <b-button variant="outline-secondary">
+                          <span>
+                            <i class="fas fa-sign-out-alt fa-2x mt-2"></i>
+                          </span>
+                    sign-out
+                  </b-button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
     </b-navbar-nav>
   </b-navbar>
@@ -92,6 +98,8 @@
 <script>
 // eslint-disable-next-line
 import _ from 'lodash';
+// eslint-disable-next-line
+import { mapMutations, mapState } from 'vuex';
 
 export default {
   name: "topbar",
@@ -154,13 +162,17 @@ export default {
     });
   this.getBrandList();
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    const listElm = document.querySelector('#brand-list');
+    listElm.removeEventListener('scroll', () => {});
+  },
   methods: {
+    ...mapMutations('brand', ['setBrand']),
     getBrandList() {
       console.log('getBrandList called');
       this.loadingBrands = true;
       setTimeout(() => {
-        // this.brands.push(...this.asdf);
+        this.brands.push(...this.asdf);
         this.loadingBrands = false;
       }, 2500);
     },
@@ -172,7 +184,7 @@ export default {
     },
     openBrand(brand) {
       this.selectedBrand = brand;
-      this.$emit('brand-selected', brand);
+      this.setBrand(brand);
     },
     addFav(id) {
       // if (this.favoriteBrands.length >= 3) {
@@ -283,7 +295,6 @@ export default {
   font-size: 1rem;
   text-align: left;
   background: #e9e9e9;
-  display: none;
   border: 1px solid #bbb;
   border-radius: 5px;
 }
@@ -326,7 +337,6 @@ export default {
   min-width: 10rem;
   top: 100%;
   right: 1rem;
-  display: none;
 }
 
 .profile-sub-container {
@@ -381,20 +391,22 @@ export default {
   background: #dce4ec;
   border-radius: 10px;
   position: absolute;
-  z-index: 1000;
+  z-index: 1;
   min-width: 10rem;
   height: 3rem;
   top: 100%;
   /* SORRY */
   right: 4rem;
   /* SORRY */
-  display: none;
 }
 
 .balance-loader {
+  background: #dce4ec;
+  border-radius: 10px;
   position: absolute;
   display: flex;
   justify-content: center;
+  align-items: center;
   height: 100%;
   width: 100%;
   z-index: 4999;
