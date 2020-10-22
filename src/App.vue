@@ -24,7 +24,7 @@
             </div>
           </transition>
           <div class="main-graph">
-            <b-card v-if="brand && brand.id" class="border-success" header-tag="header">
+            <b-card v-if="brand && brand.id" header-tag="header">
               <h3 slot="header">selected-brand</h3>
 <!--              <b-table-simple v-if="favoriteBrands && favoriteBrands.length" small bordered outlined hover striped>-->
 <!--                <b-thead>-->
@@ -50,7 +50,9 @@
               <label>graphics here hehehehehe</label>
             </b-card>
           </div>
-          <div class="trade-actions">asdf</div>
+          <div class="trade-actions">
+            <make-order></make-order>
+          </div>
         </main>
       </div>
 <!--        <div id="chart"></div>-->
@@ -68,12 +70,14 @@ import * as am4charts from '@amcharts/amcharts4/charts'
 // eslint-disable-next-line
 import { mapMutations, mapState } from 'vuex'
 import Topbar from './components/Topbar';
+import MakeOrder from "./components/MakeOrder";
 
 // let chart = am4core.create('chart', am4charts.XYChart);
 export default {
   name: 'app',
   components: {
     'top-bar': Topbar,
+    'make-order': MakeOrder,
   },
   data() {
     return {
@@ -199,8 +203,9 @@ export default {
   }
 
   .main-container {
-    border: 1px dashed red;
-    position: relative;
+    /*border: 1px dashed red;*/
+    position: absolute;
+    left: 80px;
     width: calc(100vw - 80px) !important;
     height: calc(100vh - 65px) !important;
     display: flex;
@@ -235,18 +240,18 @@ export default {
 
   .sidebar-submenu {
     width: 400px;
-    border: 1px solid green;
+    /*border: 1px solid green;*/
   }
 
   .main-graph {
     padding: .625rem;
     width: 100%;
-    border: 1px solid yellow;
+    /*border: 1px solid yellow;*/
   }
 
   .trade-actions {
-    width: 200px;
-    border: 1px solid blue;
+    width: 280px;
+    /*border: 1px solid blue;*/
   }
 
   .slide-leave-active,

@@ -13,8 +13,10 @@
     "bootstrap-vue": "^2.17.3",
     "core-js": "^3.6.5",
     "lodash": "^4.17.20",
+    "v-calendar": "^1.0.8",
     "vue": "^2.6.12",
     "vue-router": "^3.4.7",
+    "vue-sweetalert2": "^4.0.0",
     "vuex": "^3.5.1",
     "vuex-persistedstate": "^4.0.0-beta.1"
   },
