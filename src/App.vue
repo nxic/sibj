@@ -14,14 +14,14 @@
       <div class="main-container">
         <main>
           <transition name="slide">
-            <div class="sidebar-submenu" v-if="openedSideSubMenu">
+            <b-card class="sidebar-submenu" v-if="openedSideSubMenu">
               menu-type = {{ JSON.stringify(menuType) }}
               <p v-if="menuType === 'a'">MC</p>
               <pre v-if="menuType === 'b'">MAGNAI</pre>
               <h4 v-if="menuType === 'c'">YOGI</h4>
               <h3 v-if="menuType === 'd'">SUUGII</h3>
               <h2 v-if="menuType === 'e'">KU</h2>
-            </div>
+            </b-card>
           </transition>
           <div class="main-graph">
             <b-card v-if="brand && brand.id" header-tag="header">
@@ -239,6 +239,7 @@ export default {
   }
 
   .sidebar-submenu {
+    margin-left: .625rem;
     width: 400px;
     /*border: 1px solid green;*/
   }

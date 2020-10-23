@@ -34,7 +34,7 @@
               {{ item.id }}
               {{ item.name }}
               <div class="brand-button-wrapper">
-                <b-button class="btn-xs ml-5" :disabled="item.isDisabled" @click.prevent="addFav(item.id)"><span><i class="fas fa-plus"></i></span></b-button>
+                <b-button class="btn-xs ml-5" :disabled="item.isDisabled" @click.prevent="addFav(item)"><span><i class="fas fa-plus"></i></span></b-button>
               </div>
             </li>
             <transition name="fade">
@@ -152,6 +152,10 @@ export default {
   },
   created() {
     this.getBrandList = _.debounce(this.getBrandList, 500);
+    if (this.$store.state.brand.brand.id) {
+      console.warn(this.$store.state.brand.brand.id);
+      this.favoriteBrands.push(this.$store.state.brand.brand);
+    }
   },
   mounted() {
     const listElm = document.querySelector('#brand-list');
@@ -160,7 +164,8 @@ export default {
         this.getBrandList();
       }
     });
-  this.getBrandList();
+    console.log(this.$store.brand);
+    this.getBrandList();
   },
   beforeDestroy() {
     const listElm = document.querySelector('#brand-list');
@@ -186,13 +191,14 @@ export default {
       this.selectedBrand = brand;
       this.setBrand(brand);
     },
-    addFav(id) {
+    addFav(brand) {
       // if (this.favoriteBrands.length >= 3) {
       //   this.$bvToast('maxFavBrandsSelected');
       //   return;
       // }
-      this.brands.find(x => x.id === id).isDisabled = true;
-      this.favoriteBrands.push(this.brands.find(x => x.id === id));
+      this.setBrand(brand);
+      this.brands.find(x => x.id === brand.id).isDisabled = true;
+      this.favoriteBrands.push(this.brands.find(x => x.id === brand.id));
       this.openedBrands = !this.openedBrands;
     },
     removeFav(id) {

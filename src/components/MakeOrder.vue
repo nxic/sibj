@@ -1,6 +1,5 @@
 <template>
   <div class="make-order-container">
-    <div>brandSymbol</div>
     <b-form-radio-group class="order-form" id="orderType" v-model="isConditional" name="orderType" buttons>
       <b-form-radio size="sm" :value="true" button-variant="outline-info">Нөхцөлт</b-form-radio>
       <b-form-radio size="sm" :value="false" button-variant="outline-primary">Зах зээлийн</b-form-radio>
@@ -15,10 +14,10 @@
       <b-form-select :options="durationOption" v-model="orderModel.duration"/>
     </b-form-group>
     <b-form-group class="order-form" label="calendar" v-if="orderModel.duration === 'date'">
-      <v-date-picker is-inline v-model="orderModel.date" :input-props="{ placeholder: 'ognoog oruulna uu' }"/>
+      <v-date-picker is-inline v-model="orderModel.date"/>
     </b-form-group>
-    <b-button id="order-button-buy" class="order-button" size="lg" variant="outline-success" @click="makeOrder('buy')">BUY</b-button>
-    <b-button id="order-button-sell" class="order-button" size="lg" variant="outline-danger"  @click="makeOrder('sell')">SELL</b-button>
+    <b-button id="order-button-buy" class="order-button" size="lg" variant="outline-success" @click="makeOrder('buy')">Худалдан авах</b-button>
+    <b-button id="order-button-sell" class="order-button" size="lg" variant="outline-danger"  @click="makeOrder('sell')">Зарах</b-button>
   </div>
 </template>
 
@@ -45,32 +44,81 @@ export default {
       },
       mockOrderInfo: {
         symbol: 'ICNFBI',
-        amount: 30000,
+        amount: 100,
         price: 20000,
         validDate: new Date(),
-        orderType: 'fucked fixed',
+        orderType: 'conditional',
         duration: 'tomorrow',
-        totalPrice: 999999999,
-        feeAmount: 9999999,
-        supTotalPrice: 999999,
+        totalPrice: 2000000,
+        feeAmount: 100000,
+        supTotalPrice: 2100000,
         // totalPrice: this.mockOrderInfo.amount * this.mockOrderInfo.price,
         // feeAmount: this.mockOrderInfo.totalPrice * 0.1,
         // supTotalPrice: this.mockOrderInfo.totalPrice + this.mockOrderInfo.feeAmount,
-      }
+      },
+      feePercent: 0.04,
     }
   },
   mounted() {
     console.log('make order mounted');
   },
   methods: {
-    async makeOrder() {
-      this.$swal({ html: `<table id="table" border="1"><tbody><tr><td>symbol</td><td>${this.mockOrderInfo.symbol}</td></tr><tr><td>amount</td><td>${this.mockOrderInfo.amount}</td></tr><tr><td>price</td><td>${this.mockOrderInfo.price}</td></tr><tr><td>validDate</td><td>${this.mockOrderInfo.validDate}</td></tr><tr><td>orderType</td><td>${this.mockOrderInfo.orderType}</td></tr><tr><td>duration</td><td>${this.mockOrderInfo.duration}</td></tr><tr><td>totalPrice</td><td>${this.mockOrderInfo.totalPrice}</td></tr><tr><td>feeAmount</td><td>${this.mockOrderInfo.feeAmount}</td></tr><tr><td>supTotalPrice</td><td>${this.mockOrderInfo.supTotalPrice}</td></tr></tbody></table>`}); this.isLoading = true;
-      try {
-        console.log('end api duudna');
-      } catch (e) {
-        console.error(e);
-      }
-      this.isLoading = false;
+    async makeOrder(type) {
+      this.$swal({
+        confirmButtonText: type === 'buy' ? 'Худалдан авах' : 'Зарах',
+        confirmButtonColor: type === 'buy' ? '#41b882' : '#ff7674',
+        html:
+          `<table id="table" border="1" style="right: 50%; left: 50%; align-self: center; display: table; margin-left: 6.3rem;">
+            <tbody>
+              <tr>
+                <td>symbol</td>
+                <td>${this.orderInfo.symbol}</td>
+              </tr>
+              <tr>
+                <td>amount</td>
+                <td>${this.orderInfo.amount}</td>
+              </tr>
+              <tr>
+                <td>price</td>
+                <td>${this.$options.filters.currency(this.orderInfo.price, '', '₮')}</td>
+              </tr>
+              ${ this.orderInfo.orderType === 'date' ?
+                `<tr>
+                    <td>validDate</td>
+                    <td>${this.$options.filters.date(this.orderInfo.validDate)}</td>
+                  </tr>
+                ` : ''
+              }
+              <tr>
+                <td>orderType</td>
+                <td>${this.orderInfo.orderType}</td>
+              </tr><tr>
+                <td>duration</td>
+                <td>${this.orderInfo.duration}</td>
+              </tr>
+              <tr>
+                <td>totalPrice</td>
+                <td>${this.$options.filters.currency(this.orderInfo.totalPrice, '', '₮')}</td>
+              </tr>
+              <tr>
+                <td>feeAmount</td>
+                <td>${this.$options.filters.currency(this.orderInfo.feeAmount, '', '₮')}</td>
+              </tr>
+              <tr>
+                <td>supTotalPrice</td>
+                <td>${this.$options.filters.currency(this.orderInfo.supTotalPrice, '', '₮')}</td>
+              </tr>
+            </tbody>
+          </table>`
+      }, async () => {
+        this.isLoading = true;
+        try {
+          console.log(this.orderModel.type ? 'end api duudna' : 'end uur api duudna');
+        } catch (e) {
+          console.error(e);
+        }
+        this.isLoading = false;
+      });
     },
   },
   computed: {
@@ -78,7 +126,17 @@ export default {
       return this.$store.state.brand.brand;
     },
     orderInfo() {
-      return ``
+      return {
+        symbol: this.brand.name,
+        amount: this.orderModel.amount,
+        price: this.orderModel.price,
+        orderType: this.isConditional ? 'Нөхцөлт' : 'Нөгөөдөх нь',
+        duration: this.orderModel.duration,
+        validDate: this.orderModel.duration === 'date' ? this.orderModel.date : '',
+        totalPrice: this.orderModel.amount * this.orderModel.price,
+        feeAmount: (this.orderModel.amount * this.orderModel.price) * this.feePercent,
+        supTotalPrice: (this.orderModel.amount * this.orderModel.price) * this.feePercent + (this.orderModel.amount * this.orderModel.price),
+      }
     }
   }
 }
