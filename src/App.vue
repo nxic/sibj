@@ -240,6 +240,7 @@ export default {
 
   .sidebar-submenu {
     margin-left: .625rem;
+    margin-top: 0.625rem;
     width: 400px;
     /*border: 1px solid green;*/
   }

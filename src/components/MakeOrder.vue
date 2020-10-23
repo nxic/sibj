@@ -64,11 +64,12 @@ export default {
   },
   methods: {
     async makeOrder(type) {
+      // const date = this.orderModel.duration === 'date' ? `<tr><td>validDate</td><td>${this.$options.filters.date(this.orderInfo.validDate)}</td></tr>` : '';
       this.$swal({
         confirmButtonText: type === 'buy' ? 'Худалдан авах' : 'Зарах',
         confirmButtonColor: type === 'buy' ? '#41b882' : '#ff7674',
         html:
-          `<table id="table" border="1" style="right: 50%; left: 50%; align-self: center; display: table; margin-left: 6.3rem;">
+          `<table id="table" border="1" style="width: -webkit-fill-available;">
             <tbody>
               <tr>
                 <td>symbol</td>
@@ -82,7 +83,7 @@ export default {
                 <td>price</td>
                 <td>${this.$options.filters.currency(this.orderInfo.price, '', '₮')}</td>
               </tr>
-              ${ this.orderInfo.orderType === 'date' ?
+              ${ this.orderInfo.duration === 'date' ?
                 `<tr>
                     <td>validDate</td>
                     <td>${this.$options.filters.date(this.orderInfo.validDate)}</td>

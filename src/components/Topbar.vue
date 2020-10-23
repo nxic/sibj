@@ -7,7 +7,7 @@
                 <span class="remove-fav d-none" @click="removeFav(item.id)">
                   <i class="remove-icon fas fa-times"></i>
                 </span>
-          <b-button variant="outline-secondary" size="sm" @click="openBrand(item)">
+          <b-button variant="outline-secondary" size="sm" @click="openBrand(item)" :class="{ 'selected-brand': item.id === brand.id }">
             <img :src="item.logo" :alt="item.name" class="brand-logo">
             <span>{{ item.name }}</span>
           </b-button>
@@ -226,6 +226,11 @@ export default {
       await this.getBalance();
       await this.toggleBalance();
     }
+  },
+  computed: {
+    brand() {
+      return this.$store.state.brand.brand;
+    },
   }
 }
 </script>
@@ -239,9 +244,16 @@ export default {
 }
 
 .remove-fav:hover {
-  display: block;
   cursor: pointer;
+  display: table !important;
 }
+
+.selected-brand {
+  /* TODO: ENENII SHADOW-G GOY BOLGOX */
+  -webkit-box-shadow: 0 0 10px 4px #6c757d;
+  box-shadow: 0 0 10px 4px #6c757d;
+}
+
 
 .fav-item {
   overflow: visible;
@@ -275,9 +287,7 @@ export default {
   display: table !important;
 }
 
-.remove-fav:hover {
-  display: table !important;
-}
+
 
 /* TODO: main.scss-ruu oruulax */
 .btn-xs {
