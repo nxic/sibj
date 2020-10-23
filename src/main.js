@@ -18,7 +18,6 @@ Vue.use(VueSweetalert2, {
   // cancelButtonText: 'no',
   showCancelButton: false,
   showConfirmButton: true,
-  title: 'order',
 });
 Vue.use(BootstrapVue);
 Vue.use(VCalendar, {

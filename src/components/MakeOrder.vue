@@ -4,7 +4,7 @@
       <b-form-radio size="sm" :value="true" button-variant="outline-info">Нөхцөлт</b-form-radio>
       <b-form-radio size="sm" :value="false" button-variant="outline-primary">Зах зээлийн</b-form-radio>
     </b-form-radio-group>
-    <b-form-group class="order-form" label="mungun dun">
+    <b-form-group v-if="isConditional" class="order-form" label="mungun dun">
       <b-form-input type="number" no-wheel v-model="orderModel.price"></b-form-input>
     </b-form-group>
     <b-form-group class="order-form" label="too xemjee">
@@ -68,6 +68,8 @@ export default {
       this.$swal({
         confirmButtonText: type === 'buy' ? 'Худалдан авах' : 'Зарах',
         confirmButtonColor: type === 'buy' ? '#41b882' : '#ff7674',
+        icon: 'info',
+        reverseButtons: true,
         html:
           `<table id="table" border="1" style="width: -webkit-fill-available;">
             <tbody>
@@ -79,10 +81,11 @@ export default {
                 <td>amount</td>
                 <td>${this.orderInfo.amount}</td>
               </tr>
-              <tr>
-                <td>price</td>
-                <td>${this.$options.filters.currency(this.orderInfo.price, '', '₮')}</td>
-              </tr>
+              ${ this.isConditional ?
+                `<tr>
+                    <td>price</td>
+                    <td>${this.$options.filters.currency(this.orderInfo.price, '', '₮')}</td>
+                  </tr>` : '' }
               ${ this.orderInfo.duration === 'date' ?
                 `<tr>
                     <td>validDate</td>
