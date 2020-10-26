@@ -1,29 +1,32 @@
 <template>
   <div class="order-sidebar-container">
     <h6 class="text-center sticky-top sidebar-header">{{ isOrder ? 'Order History' : 'Trade History' }}</h6>
-    <div v-for="(item, i) in mockItems" :key="i" class="history-item">
-      <b-row>
-        <b-col class="text-right" cols="4">{{ item.createdAt.format('hh:mm A') }}</b-col>
-        <b-col>
-          <h5>{{ toSymbolName(item.symbol) }}</h5>
-        </b-col>
-        <b-col>
-          <!-- TODO: enenii state-g uur ymaar irexeer end ni condition-g ni solix -->
-          <b-badge class="state-badge" v-if="item.state === 'new'" pill variant="primary">Шинэ</b-badge>
-          <b-badge class="state-badge" v-if="item.state === 'cancelled'" pill variant="danger">Цуцалсан</b-badge>
-          <b-badge class="state-badge" v-if="item.state === 'success'" pill variant="success">Биелсан</b-badge>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="text-right" cols="4">{{ item.createdAt.format('YY/MM/DD') }}</b-col>
-        <b-col cols="8">{{ item.price | currency('', '₮') }} x {{ item.amount | amount }}</b-col>
-      </b-row>
-      <b-row>
-        <b-col class="text-right"><b-badge :variant="item.type === 'conditional' ? 'info' : 'dark'">{{ item.type }}</b-badge></b-col>
-        <b-col><b-button class="show-more-button" variant="outline-info">detail</b-button></b-col>
-        <b-col class="text-center"><b-button v-if="isOrder" variant="outline-danger" size="xs"><span><i class="fas fa-trash"></i></span></b-button></b-col>
-      </b-row>
-    </div>
+    <div v-show="isLoading" class="loading-mask"></div>
+    <ul id="menu-list">
+      <li v-for="(item, i) in items" :key="i" class="history-item">
+        <b-row>
+          <b-col class="text-right" cols="4">{{ item.createdAt.format('hh:mm A') }}</b-col>
+          <b-col class="text-center">
+            <h5>{{ toSymbolName(item.symbol) }}</h5>
+          </b-col>
+          <b-col>
+            <!-- TODO: enenii state-g uur ymaar irexeer end ni condition-g ni solix -->
+            <b-badge class="state-badge" v-if="item.state === 'new'" pill variant="primary">Шинэ</b-badge>
+            <b-badge class="state-badge" v-if="item.state === 'cancelled'" pill variant="danger">Цуцалсан</b-badge>
+            <b-badge class="state-badge" v-if="item.state === 'success'" pill variant="success">Биелсан</b-badge>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col class="text-right" cols="4">{{ item.createdAt.format('YY/MM/DD') }}</b-col>
+          <b-col cols="8">{{ item.price | currency('', '₮') }} x {{ item.amount | amount }}</b-col>
+        </b-row>
+        <b-row>
+          <b-col class="text-right"><b-badge :variant="item.type === 'conditional' ? 'info' : 'dark'">{{ item.type }}</b-badge></b-col>
+          <b-col><b-button class="show-more-button" variant="outline-info">detail</b-button></b-col>
+          <b-col class="text-center"><b-button v-if="isOrder" variant="outline-danger" size="xs"><span><i class="fas fa-trash"></i></span></b-button></b-col>
+        </b-row>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -41,6 +44,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      items: [],
       mockItems: [
         { createdAt: moment('2020-02-10 05:20'), symbol: 'ICNFBI-0D-330', state: 'new', price: 980, amount: 19, type: 'conditional' },
         { createdAt: moment('2020-11-10 17:40'), symbol: 'APU-0D-330', state: 'success', price: 962, amount: 46, type: 'zaxzeel' },
@@ -55,11 +59,27 @@ export default {
     };
   },
   mounted() {
+    const listElm = document.querySelector('#menu-list');
+    listElm.addEventListener('scroll', () => {
+      if(listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) {
+        this.getHistories();
+      }
+    });
     console.log('order history mounted');
+    this.getHistories();
+  },
+  beforeDestroy() {
+    const listElm = document.querySelector('#menu-list');
+    listElm.removeEventListener('scroll', () => {});
   },
   methods: {
-    meth() {
-      console.log('meth called');
+    async getHistories() {
+      console.log('getHistories called isOrder? = ', JSON.stringify(this.isOrder));
+      this.isLoading = true;
+      setTimeout(() => {
+        this.items.push(...this.mockItems);
+        this.isLoading = false;
+      }, 1000);
     },
     toSymbolName(symbol) {
       if (!symbol) return;
@@ -84,12 +104,20 @@ export default {
     z-index: 100;
   }
 
+
+  .loading-mask {
+    width: 460px;
+    height: calc(100vh - 65px) !important;
+  }
   .history-item {
+    list-style: none;
     border: 1px dashed green;
-    margin-top: .625rem;
-    margin-bottom: 0.625rem;
-    padding-bottom: 0.625rem;
-    /*margin: 0.625rem;*/
+    margin: .1rem 0 .1rem -40px;
+    padding: .625rem 0 .625rem 0;
+  }
+
+  .history-item:last-child {
+    margin-bottom: 2rem;
   }
 
   /* TODO: main.scss-ruu oruulax */

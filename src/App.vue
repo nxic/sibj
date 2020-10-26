@@ -271,7 +271,7 @@ export default {
   .sidebar-submenu {
     margin-left: .625rem;
     margin-top: 0.625rem;
-    width: 450px;
+    width: 460px;
     /*border: 1px solid green;*/
     padding: 0.25rem;
 
@@ -293,7 +293,7 @@ export default {
 
   .graph-container {
     background-image: url("https://www.investopedia.com/thmb/CNh7gMGR9WZm8dl6NVz0VMoKKUU=/1397x786/smart/filters:no_upscale()/barchart-634e0895a33b4b459faafd0bc639f67a.jpg");
-    height: 300px;
+    height: 350px;
     width: auto;
   }
 
