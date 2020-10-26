@@ -8,9 +8,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import VCalendar from 'v-calendar';
 import VueSweetalert2 from 'vue-sweetalert2';
+import CurrencyInput from './components/CurrencyInput';
 
 import 'sweetalert2/dist/sweetalert2.min.css';
 
+Vue.component('currency-input', CurrencyInput);
 Vue.use(VueSweetalert2, {
   confirmButtonColor: '#41b882',
   // cancelButtonColor: '#ff7674',
@@ -34,6 +36,19 @@ Vue.use(VCalendar, {
 
 Vue.config.productionTip = false
 
+Vue.filter('amount', (value) => {
+  // TODO: end locale-ees xamaarch orchuulga oruulj too shirxegiin orchuulgiig butsaadag bolgox
+  const amount = {
+    mn: 'ш',
+    en: 'pcs',
+  }
+  try {
+    return `${value} ${amount.mn}`;
+  } catch (e) {
+    console.error(e);
+    return value;
+  }
+});
 
 Vue.filter('currency', (value, options, symbol = '') => {
   try {

@@ -5,7 +5,11 @@
       <b-form-radio size="sm" :value="false" button-variant="outline-primary">Зах зээлийн</b-form-radio>
     </b-form-radio-group>
     <b-form-group v-if="isConditional" class="order-form" label="mungun dun">
-      <b-form-input type="number" no-wheel v-model="orderModel.price"></b-form-input>
+      <currency-input
+          placeholder="price"
+          inputTitle="price"
+          v-model="orderModel.price"
+      ></currency-input>
     </b-form-group>
     <b-form-group class="order-form" label="too xemjee">
       <b-form-input type="number" no-wheel v-model="orderModel.amount"></b-form-input>
@@ -38,23 +42,9 @@ export default {
       ],
       orderModel: {
         price: 0,
-        amount: 0,
+        amount: null,
         duration: 'today',
         date: new Date(),
-      },
-      mockOrderInfo: {
-        symbol: 'ICNFBI',
-        amount: 100,
-        price: 20000,
-        validDate: new Date(),
-        orderType: 'conditional',
-        duration: 'tomorrow',
-        totalPrice: 2000000,
-        feeAmount: 100000,
-        supTotalPrice: 2100000,
-        // totalPrice: this.mockOrderInfo.amount * this.mockOrderInfo.price,
-        // feeAmount: this.mockOrderInfo.totalPrice * 0.1,
-        // supTotalPrice: this.mockOrderInfo.totalPrice + this.mockOrderInfo.feeAmount,
       },
       feePercent: 0.04,
     }
@@ -134,7 +124,7 @@ export default {
         symbol: this.brand.name,
         amount: this.orderModel.amount,
         price: this.orderModel.price,
-        orderType: this.isConditional ? 'Нөхцөлт' : 'Нөгөөдөх нь',
+        orderType: this.isConditional ? 'Нөхцөлт' : 'Зах зээлийн',
         duration: this.orderModel.duration,
         validDate: this.orderModel.duration === 'date' ? this.orderModel.date : '',
         totalPrice: this.orderModel.amount * this.orderModel.price,
@@ -147,6 +137,11 @@ export default {
 </script>
 
 <style scoped>
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+
   .make-order-container {
     padding: .625rem;
   }

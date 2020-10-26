@@ -4,24 +4,25 @@
       <top-bar></top-bar>
       <b-nav vertical class="sidebar">
         <span class="mt-3">
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('a')"><span><i class="fas fa-user btn-icon"></i>aaa</span></b-button></li>
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('b')"><span><i class="fas fa-user btn-icon"></i>ang</span></b-button></li>
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('c')"><span><i class="fas fa-user btn-icon"></i>ad</span></b-button></li>
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('d')"><span><i class="fas fa-user btn-icon"></i>here</span></b-button></li>
-          <li class="nav-item sidebar-item"><b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('e')"><span><i class="fas fa-user btn-icon"></i>ak</span></b-button></li>
+          <li class="nav-item sidebar-item">
+            <b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('orderHistory')">
+              <i class="fas fa-user btn-icon"></i><span class="btn-txt">Order History</span>
+            </b-button>
+          </li>
+          <li class="nav-item sidebar-item">
+            <b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('tradeHistory')">
+              <i class="fas fa-user btn-icon"></i><span class="btn-txt">Trade History</span>
+            </b-button>
+          </li>
         </span>
       </b-nav>
       <div class="main-container">
         <main>
           <transition name="slide">
-            <b-card class="sidebar-submenu" v-if="openedSideSubMenu">
-              menu-type = {{ JSON.stringify(menuType) }}
-              <p v-if="menuType === 'a'">MC</p>
-              <pre v-if="menuType === 'b'">MAGNAI</pre>
-              <h4 v-if="menuType === 'c'">YOGI</h4>
-              <h3 v-if="menuType === 'd'">SUUGII</h3>
-              <h2 v-if="menuType === 'e'">KU</h2>
-            </b-card>
+            <div class="sidebar-submenu" v-if="openedSideSubMenu">
+              <order-trade-history is-order v-if="menuType === 'orderHistory'"></order-trade-history>
+              <order-trade-history v-if="menuType === 'tradeHistory'"></order-trade-history>
+            </div>
           </transition>
           <div class="main-graph">
             <b-card v-if="brand && brand.id" header-tag="header">
@@ -46,8 +47,9 @@
 <!--              </b-table-simple>-->
               <pre>{{ brand }}</pre>
             </b-card>
-            <b-card class="text-center mt-3" bg-variant="info">
-              <label>graphics here hehehehehe</label>
+            <b-card class="text-center mt-3">
+              <label>graphics here hehehehehehehehehehehehehehehe</label>
+              <div class="graph-container"></div>
             </b-card>
           </div>
           <div class="trade-actions">
@@ -71,6 +73,7 @@ import * as am4charts from '@amcharts/amcharts4/charts'
 import { mapMutations, mapState } from 'vuex'
 import Topbar from './components/Topbar';
 import MakeOrder from "./components/MakeOrder";
+import OrderTrHistory from "./components/Sidebars/OrderTrHistory";
 
 // let chart = am4core.create('chart', am4charts.XYChart);
 export default {
@@ -78,6 +81,7 @@ export default {
   components: {
     'top-bar': Topbar,
     'make-order': MakeOrder,
+    'order-trade-history': OrderTrHistory,
   },
   data() {
     return {
@@ -197,6 +201,13 @@ export default {
     font-size: 1rem;
   }
 
+  .btn-txt {
+    display: block;
+    text-align: center;
+    font-size: 0.625rem;
+    line-height: 1;
+  }
+
   .btn-icon {
     left: 50%;
     right: 50%;
@@ -223,6 +234,25 @@ export default {
     align-items: stretch;
   }
 
+  /* TODO: responsive-g xiij duusgax */
+  /*@media (max-width: 960px) {*/
+  /*  main > div:first-child {*/
+  /*    width: 100vw;*/
+  /*    flex-direction: column;*/
+  /*  }*/
+
+  /*  main > div:nth-child(2) {*/
+  /*    width: 100vw;*/
+  /*    flex-direction: column;*/
+  /*  }*/
+
+  /*  main > div:last-child {*/
+  /*    width: 100vw;*/
+  /*    flex-direction: column;*/
+  /*  }*/
+
+  /*}*/
+
   main > div:first-child {
     overflow-y: auto;
     flex: 1 1 auto;
@@ -241,14 +271,30 @@ export default {
   .sidebar-submenu {
     margin-left: .625rem;
     margin-top: 0.625rem;
-    width: 400px;
+    width: 450px;
     /*border: 1px solid green;*/
+    padding: 0.25rem;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    box-sizing: content-box;
+
   }
 
   .main-graph {
     padding: .625rem;
     width: 100%;
     /*border: 1px solid yellow;*/
+  }
+
+  .graph-container {
+    background-image: url("https://www.investopedia.com/thmb/CNh7gMGR9WZm8dl6NVz0VMoKKUU=/1397x786/smart/filters:no_upscale()/barchart-634e0895a33b4b459faafd0bc639f67a.jpg");
+    height: 300px;
+    width: auto;
   }
 
   .trade-actions {
@@ -265,6 +311,20 @@ export default {
   }
   .slide-leave-to {
     transform: translate(-100%, 0);
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: white;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-corner {
+    background-color: rgba(0,0,0,0);
   }
 
 </style>

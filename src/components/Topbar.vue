@@ -249,9 +249,15 @@ export default {
 }
 
 .selected-brand {
+  border-color: rgba(0, 0, 0, 0.1);
   /* TODO: ENENII SHADOW-G GOY BOLGOX */
-  -webkit-box-shadow: 0 0 10px 4px #6c757d;
-  box-shadow: 0 0 10px 4px #6c757d;
+  -webkit-box-shadow: 0 0 2px 3px #17a2b8;
+  box-shadow: 0 0 2px 3px #17a2b8;
+}
+
+.selected-brand:focus {
+  -webkit-box-shadow: 0 0 2px 3px #17a2b8;
+  box-shadow: 0 0 2px 3px #17a2b8;
 }
 
 
@@ -407,7 +413,7 @@ export default {
   background: #dce4ec;
   border-radius: 10px;
   position: absolute;
-  z-index: 1;
+  z-index: 100;
   min-width: 10rem;
   height: 3rem;
   top: 100%;
@@ -428,18 +434,19 @@ export default {
   z-index: 4999;
 }
 
+
 ::-webkit-scrollbar {
   width: 5px;
 }
-
 ::-webkit-scrollbar-track {
-      background-color: white;
+  background-color: white;
 }
 ::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
 }
 ::-webkit-scrollbar-corner {
-      background-color: rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0);
 }
 
 .fade-enter-active, .fade-leave-active {
