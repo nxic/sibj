@@ -20,8 +20,8 @@
         <main>
           <transition name="slide">
             <div class="sidebar-submenu" v-if="openedSideSubMenu">
-              <order-trade-history is-order v-if="menuType === 'orderHistory'"></order-trade-history>
-              <order-trade-history v-if="menuType === 'tradeHistory'"></order-trade-history>
+              <order-trade-history key="order-history" is-order v-if="menuType === 'orderHistory'"></order-trade-history>
+              <order-trade-history key="trade-history" v-if="menuType === 'tradeHistory'"></order-trade-history>
             </div>
           </transition>
           <div class="main-graph">
@@ -150,9 +150,6 @@ export default {
       console.log('old', JSON.stringify(oldVal));
       console.log('new', JSON.stringify(newVal));
     },
-    isDisplay() {
-      console.log('computed changes');
-    }
   }
 }
 </script>
@@ -270,7 +267,7 @@ export default {
 
   .sidebar-submenu {
     margin-left: .625rem;
-    margin-top: 0.625rem;
+    margin-top: .625rem;
     width: 460px;
     /*border: 1px solid green;*/
     padding: 0.25rem;

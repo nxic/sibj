@@ -49,9 +49,7 @@ export default {
       feePercent: 0.04,
     }
   },
-  mounted() {
-    console.log('make order mounted');
-  },
+  mounted() {},
   methods: {
     async makeOrder(type) {
       // const date = this.orderModel.duration === 'date' ? `<tr><td>validDate</td><td>${this.$options.filters.date(this.orderInfo.validDate)}</td></tr>` : '';

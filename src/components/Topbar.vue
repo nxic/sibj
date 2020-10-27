@@ -9,6 +9,7 @@
                 </span>
           <b-button variant="outline-secondary" size="sm" @click="openBrand(item)" :class="{ 'selected-brand': item.id === brand.id }">
             <img :src="item.logo" :alt="item.name" class="brand-logo">
+<!--            <b-avatar :src="item.logo" variant="light" :alt="item.name" class="brand-logo"/>-->
             <span>{{ item.name }}</span>
           </b-button>
         </div>
@@ -153,18 +154,12 @@ export default {
   created() {
     this.getBrandList = _.debounce(this.getBrandList, 500);
     if (this.$store.state.brand.brand.id) {
-      console.warn(this.$store.state.brand.brand.id);
       this.favoriteBrands.push(this.$store.state.brand.brand);
     }
   },
   mounted() {
     const listElm = document.querySelector('#brand-list');
-    listElm.addEventListener('scroll', () => {
-      if(listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) {
-        this.getBrandList();
-      }
-    });
-    console.log(this.$store.brand);
+    listElm.addEventListener('scroll', () => { if(listElm.scrollTop + listElm.clientHeight >= listElm.scrollHeight) this.getBrandList(); });
     this.getBrandList();
   },
   beforeDestroy() {
@@ -174,7 +169,6 @@ export default {
   methods: {
     ...mapMutations('brand', ['setBrand']),
     getBrandList() {
-      console.log('getBrandList called');
       this.loadingBrands = true;
       setTimeout(() => {
         this.brands.push(...this.asdf);
