@@ -1,64 +1,23 @@
 <template>
   <div id="app">
-    <b-container fluid class="p-0">
-      <top-bar></top-bar>
-      <b-nav vertical class="sidebar">
-        <span class="mt-3">
-          <li class="nav-item sidebar-item">
-            <b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('orderHistory')">
-              <i class="fas fa-user btn-icon"></i><span class="btn-txt">Order History</span>
-            </b-button>
-          </li>
-          <li class="nav-item sidebar-item">
-            <b-button size="lg" variant="outline-info" class="sidebar-button text-center" @click="toggleSideSubMenu('tradeHistory')">
-              <i class="fas fa-user btn-icon"></i><span class="btn-txt">Trade History</span>
-            </b-button>
-          </li>
-        </span>
-      </b-nav>
-      <div class="main-container">
-        <main>
-          <transition name="slide">
-            <div class="sidebar-submenu" v-if="openedSideSubMenu">
-              <order-trade-history key="order-history" is-order v-if="menuType === 'orderHistory'"></order-trade-history>
-              <order-trade-history key="trade-history" v-if="menuType === 'tradeHistory'"></order-trade-history>
-            </div>
-          </transition>
-          <div class="main-graph">
-            <b-card v-if="brand && brand.id" header-tag="header">
-              <h3 slot="header">selected-brand</h3>
-<!--              <b-table-simple v-if="favoriteBrands && favoriteBrands.length" small bordered outlined hover striped>-->
-<!--                <b-thead>-->
-<!--                  <b-tr>-->
-<!--                    <b-th>logo</b-th>-->
-<!--                    <b-th>name</b-th>-->
-<!--                    <b-th>action</b-th>-->
-<!--                  </b-tr>-->
-<!--                </b-thead>-->
-<!--                <b-tbody>-->
-<!--                  <b-tr v-for="(item, i) in favoriteBrands" :key="i">-->
-<!--                    <b-td>{{ i + 1 }}</b-td>-->
-<!--                    <b-td>{{ item.name }}</b-td>-->
-<!--                    <b-td>-->
-<!--                      <b-button size="sm"><span><i class="fas fa-times"></i></span></b-button>-->
-<!--                    </b-td>-->
-<!--                  </b-tr>-->
-<!--                </b-tbody>-->
-<!--              </b-table-simple>-->
-              <pre>{{ brand }}</pre>
-            </b-card>
-            <b-card class="text-center mt-3">
-              <label>graphics here hehehehehehehehehehehehehehehe</label>
-              <div class="graph-container"></div>
-            </b-card>
-          </div>
-          <div class="trade-actions">
-            <make-order></make-order>
-          </div>
-        </main>
-      </div>
-<!--        <div id="chart"></div>-->
-    </b-container>
+    <b-card class="p-3">
+      <b-table :items="items" :fields="fields" responsive outlined small>
+        <template #cell(name)="row">
+          <!--          <b-button variant="outline-info" @click="row.detailsShowing = !row.detailsShowing">{{ row.value }}</b-button>-->
+          <b-button variant="outline-info" @click="detailVal(row)">{{ row.value }}</b-button>
+          {{ row.detailsShowing }}
+        </template>
+        <template #cell(age)="row">
+          <!--          <b-button variant="outline-info" @click="row.detailsShowing = !row.detailsShowing">{{ row.value }}</b-button>-->
+          <b-button variant="outline-info" @click="detailVal(row)">{{ row.value }}</b-button>
+          {{ row.detailsShowing }}
+        </template>
+        <template #row-details="row">
+          <span style="display: none;">{{ row }}</span>
+          <b-button :variant="detailContent.variant">{{ detailContent.value }}</b-button>
+        </template>
+      </b-table>
+    </b-card>
   </div>
 </template>
 
@@ -71,20 +30,21 @@ import * as am4core from '@amcharts/amcharts4/core'
 import * as am4charts from '@amcharts/amcharts4/charts'
 // eslint-disable-next-line
 import { mapMutations, mapState } from 'vuex'
-import Topbar from './components/Topbar';
-import MakeOrder from "./components/MakeOrder";
-import OrderTrHistory from "./components/Sidebars/OrderTrHistory";
+// import Topbar from './components/Topbar';
+// import MakeOrder from "./components/MakeOrder";
+// import OrderTrHistory from "./components/Sidebars/OrderTrHistory";
 
 // let chart = am4core.create('chart', am4charts.XYChart);
 export default {
   name: 'app',
   components: {
-    'top-bar': Topbar,
-    'make-order': MakeOrder,
-    'order-trade-history': OrderTrHistory,
+    // 'top-bar': Topbar,
+    // 'make-order': MakeOrder,
+    // 'order-trade-history': OrderTrHistory,
   },
   data() {
     return {
+      detailContent: '',
       brands: [
         { id: 1, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'ICNFBI' },
         { id: 2, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'LEND' },
@@ -92,6 +52,29 @@ export default {
         { id: 4, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'GOBI' },
         { id: 5, isDisabled: false, logo: 'https://scontent.fuln3-1.fna.fbcdn.net/v/t1.0-9/26904512_1937598752936206_5896850323450214828_n.jpg', name: 'APU' },
       ],
+      items: [
+        { id: _.random(1,100), name: 'a', age: _.random(2,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+        { id: _.random(1,100), name: 'a', age: _.random(1,100) },
+      ],
+      fields: [
+        { key: 'id', label: 'aidi' },
+        { key: 'name', label: 'ner' },
+        { key: 'age', label: 'nas' },
+      ],
+      a: 'ene neg ym',
       favoriteBrands: [],
       selectedBrand: null,
       openedBrands: false,
@@ -119,6 +102,20 @@ export default {
     // series.dataFields.valueY = "closingPrice";
   },
   methods: {
+    detailVal(params) {
+      if (!this.detailContent) {
+        params.toggleDetails();
+      } else if (params.field.key === this.detailContent.field.key) {
+        params.toggleDetails();
+      }
+      this.detailContent = params;
+      if (params.field.key === 'name') {
+        this.detailContent.variant = 'primary';
+      } else {
+        this.detailContent.variant = 'info';
+      }
+      this.$forceUpdate();
+    },
     displayBrand() {
       this.selectedBrand = this.brand;
     },
