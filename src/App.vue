@@ -4,17 +4,20 @@
       <b-table :items="items" :fields="fields" responsive outlined small>
         <template #cell(name)="row">
           <!--          <b-button variant="outline-info" @click="row.detailsShowing = !row.detailsShowing">{{ row.value }}</b-button>-->
-          <b-button variant="outline-info" @click="detailVal(row)">{{ row.value }}</b-button>
+          {{ row.value }}
+          <b-button variant="outline-info" @click="detailVal(row)">detail</b-button>
           {{ row.detailsShowing }}
         </template>
         <template #cell(age)="row">
+          {{ row.value }}
           <!--          <b-button variant="outline-info" @click="row.detailsShowing = !row.detailsShowing">{{ row.value }}</b-button>-->
-          <b-button variant="outline-info" @click="detailVal(row)">{{ row.value }}</b-button>
+          <b-button variant="outline-info" @click="detailVal(row)">detail</b-button>
           {{ row.detailsShowing }}
         </template>
         <template #row-details="row">
           <span style="display: none;">{{ row }}</span>
           <b-button :variant="detailContent.variant">{{ detailContent.value }}</b-button>
+          <p>{{ detailContent.variant }}</p>
         </template>
       </b-table>
     </b-card>
@@ -107,6 +110,7 @@ export default {
         params.toggleDetails();
       } else if (params.field.key === this.detailContent.field.key) {
         params.toggleDetails();
+        this.detailContent = '';
       }
       this.detailContent = params;
       if (params.field.key === 'name') {
